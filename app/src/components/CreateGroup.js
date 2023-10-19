@@ -10,7 +10,11 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
   const handleChange = (e, index) => {
     const { name, value } = e.target;
     const updatedWalletIds = [...formData.walletIds];
-    updatedWalletIds[index] = value;
+    if (index !== -1) {
+      updatedWalletIds[index] = value;
+    } else {
+      formData[name] = value; // Corrected the name assignment for group name and description
+    }
 
     setFormData({ ...formData, walletIds: updatedWalletIds });
   };
