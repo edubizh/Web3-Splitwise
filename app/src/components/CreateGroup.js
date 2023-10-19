@@ -5,16 +5,13 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
     groupName: '',
     description: '',
     walletIds: [''],
+    expenses: [],
   });
 
   const handleChange = (e, index) => {
     const { name, value } = e.target;
     const updatedWalletIds = [...formData.walletIds];
-    if (index !== -1) {
-      updatedWalletIds[index] = value;
-    } else {
-      formData[name] = value; // Corrected the name assignment for group name and description
-    }
+    updatedWalletIds[index] = value;
 
     setFormData({ ...formData, walletIds: updatedWalletIds });
   };
@@ -29,6 +26,28 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
     setFormData({ ...formData, walletIds: updatedWalletIds });
   };
 
+  const addExpense = () => {
+    const newExpense = {
+      description: '',
+      amount: 0,
+      splitAmong: [...formData.walletIds],
+    };
+    setFormData({ ...formData, expenses: [...formData.expenses, newExpense] });
+  };
+
+  const removeExpense = (index) => {
+    const updatedExpenses = [...formData.expenses];
+    updatedExpenses.splice(index, 1);
+    setFormData({ ...formData, expenses: updatedExpenses });
+  };
+
+  const handleExpenseChange = (e, expenseIndex) => {
+    const { name, value } = e.target;
+    const updatedExpenses = [...formData.expenses];
+    updatedExpenses[expenseIndex][name] = value;
+    setFormData({ ...formData, expenses: updatedExpenses });
+  };
+
   const handleSubmit = () => {
     onSubmit(formData);
     onClose();
@@ -41,6 +60,7 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
       <div className="bg-white p-6 rounded shadow-md w-96">
         <h2 className="text-2xl font-semibold mb-4">Create Group</h2>
         <form>
+          {/* Group Name and Description */}
           <div className="mb-4">
             <label htmlFor="groupName" className="block text-sm font-medium text-gray-700">Group Name:</label>
             <input
@@ -62,6 +82,7 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
               className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
+          {/* Wallet IDs */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Wallet IDs:</label>
             {formData.walletIds.map((walletId, index) => (
@@ -88,6 +109,44 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
               className="px-3 py-1 text-blue-500 hover:underline"
             >
               +
+            </button>
+          </div>
+          {/* Expenses */}
+          <div className="mb-4">
+            <h3 className="text-lg font-semibold mb-2">Expenses:</h3>
+            {formData.expenses.map((expense, index) => (
+              <div key={index} className="mb-4">
+                <input
+                  type="text"
+                  name="description"
+                  value={expense.description}
+                  onChange={(e) => handleExpenseChange(e, index)}
+                  placeholder="Expense description"
+                  className="p-2 w-full rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                <input
+                  type="number"
+                  name="amount"
+                  value={expense.amount}
+                  onChange={(e) => handleExpenseChange(e, index)}
+                  placeholder="Amount"
+                  className="p-2 w-full mt-2 rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                />
+                <button
+                  type="button"
+                  onClick={() => removeExpense(index)}
+                  className="mt-2 px-3 py-1 text-red-500 rounded-md hover:text-red-700"
+                >
+                  Remove Expense
+                </button>
+              </div>
+            ))}
+            <button
+              type="button"
+              onClick={addExpense}
+              className="px-3 py-1 text-blue-500 hover:underline"
+            >
+              + Add Expense
             </button>
           </div>
           <div className="text-right">
