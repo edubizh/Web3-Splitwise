@@ -5,7 +5,7 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
     groupName: '',
     description: '',
     walletIds: [''],
-    expenses: [],
+    expenses: [{ description: '', amount: 0, currency: 'ETH' }],
   });
 
   const handleChange = (e, index) => {
@@ -30,7 +30,7 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
     const newExpense = {
       description: '',
       amount: 0,
-      splitAmong: [...formData.walletIds],
+      currency: 'ETH', // Default to ETH, you can set the default to any other cryptocurrency
     };
     setFormData({ ...formData, expenses: [...formData.expenses, newExpense] });
   };
@@ -132,6 +132,16 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
                   placeholder="Amount"
                   className="p-2 w-full mt-2 rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
+                <select
+                  name="currency"
+                  value={expense.currency}
+                  onChange={(e) => handleExpenseChange(e, index)}
+                  className="p-2 w-full mt-2 rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                >
+                  <option value="ETH">ETH</option>
+                  <option value="BTC">BTC</option>
+                  {/* Add other cryptocurrency options here */}
+                </select>
                 <button
                   type="button"
                   onClick={() => removeExpense(index)}
