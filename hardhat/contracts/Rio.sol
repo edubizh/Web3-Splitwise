@@ -62,6 +62,7 @@ contract Rio {
 
     function makePayment(uint256 paymentRequestId) external payable {
         uint placeInArray = isDebtor(paymentRequestId);
+        require(!paymentRequests[paymentRequestId].debtors[placeInArray].paid, "Already paid");
 
         //one is added in the denominator to divide cost between debtors AND payee
         uint256 payment = paymentRequests[paymentRequestId].cost / (paymentRequests[paymentRequestId].debtors.length + 1);
