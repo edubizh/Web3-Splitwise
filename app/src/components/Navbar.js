@@ -15,7 +15,12 @@ const Navbar = () => {
 
   return (
     <nav className="bg-blue-500 p-4">
-      <ul className="flex justify-center items-center space-x-4">
+      <ul className="text-white flex justify-center items-center space-x-4">
+        <li>
+          <a href="/">
+            RIO
+          </a>
+        </li>
         <li>
           <button
             onClick={openCreateGroup}

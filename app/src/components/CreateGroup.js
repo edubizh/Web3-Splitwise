@@ -68,7 +68,7 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
 
   return (
     <div className="fixed top-0 left-0 flex items-center justify-center w-screen h-screen bg-black bg-opacity-50 z-50">
-      <div className="bg-white p-6 rounded shadow-md w-96">
+      <div className="bg-white p-6 rounded shadow-md w-128 max-h-screen overflow-y-auto"> {/* Increased width to 128 */}
         <h2 className="text-2xl font-semibold mb-4">Create Group</h2>
         <form>
           <div className="mb-4">
