@@ -1,54 +1,65 @@
 import React, { useState } from 'react';
 
 const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
-  const [formData, setFormData] = useState({
-    groupName: '',
-    description: '',
-    walletIds: [''],
-    expenses: [{ description: '', amount: 0, currency: 'ETH' }],
-  });
+  const [groupName, setGroupName] = useState('');
+  const [description, setDescription] = useState('');
+  const [walletIds, setWalletIds] = useState(['']);
+  const [expenses, setExpenses] = useState([
+    { description: '', amount: 0, currency: 'ETH' },
+  ]);
 
-  const handleChange = (e, index) => {
-    const { name, value } = e.target;
-    const updatedWalletIds = [...formData.walletIds];
-    updatedWalletIds[index] = value;
+  const handleGroupNameChange = (e) => {
+    setGroupName(e.target.value);
+  };
 
-    setFormData({ ...formData, walletIds: updatedWalletIds });
+  const handleDescriptionChange = (e) => {
+    setDescription(e.target.value);
+  };
+
+  const handleWalletIdChange = (e, index) => {
+    const updatedWalletIds = [...walletIds];
+    updatedWalletIds[index] = e.target.value;
+    setWalletIds(updatedWalletIds);
+  };
+
+  const handleExpenseChange = (e, expenseIndex, field) => {
+    const updatedExpenses = [...expenses];
+    updatedExpenses[expenseIndex][field] = e.target.value;
+    setExpenses(updatedExpenses);
   };
 
   const addWalletIdField = () => {
-    setFormData({ ...formData, walletIds: [...formData.walletIds, ''] });
+    setWalletIds([...walletIds, '']);
   };
 
   const removeWalletIdField = (index) => {
-    const updatedWalletIds = [...formData.walletIds];
+    const updatedWalletIds = [...walletIds];
     updatedWalletIds.splice(index, 1);
-    setFormData({ ...formData, walletIds: updatedWalletIds });
+    setWalletIds(updatedWalletIds);
   };
 
   const addExpense = () => {
     const newExpense = {
       description: '',
       amount: 0,
-      currency: 'ETH', // Default to ETH, you can set the default to any other cryptocurrency
+      currency: 'ETH',
     };
-    setFormData({ ...formData, expenses: [...formData.expenses, newExpense] });
+    setExpenses([...expenses, newExpense]);
   };
 
   const removeExpense = (index) => {
-    const updatedExpenses = [...formData.expenses];
+    const updatedExpenses = [...expenses];
     updatedExpenses.splice(index, 1);
-    setFormData({ ...formData, expenses: updatedExpenses });
-  };
-
-  const handleExpenseChange = (e, expenseIndex) => {
-    const { name, value } = e.target;
-    const updatedExpenses = [...formData.expenses];
-    updatedExpenses[expenseIndex][name] = value;
-    setFormData({ ...formData, expenses: updatedExpenses });
+    setExpenses(updatedExpenses);
   };
 
   const handleSubmit = () => {
+    const formData = {
+      groupName,
+      description,
+      walletIds,
+      expenses,
+    };
     onSubmit(formData);
     onClose();
   };
@@ -60,15 +71,14 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
       <div className="bg-white p-6 rounded shadow-md w-96">
         <h2 className="text-2xl font-semibold mb-4">Create Group</h2>
         <form>
-          {/* Group Name and Description */}
           <div className="mb-4">
             <label htmlFor="groupName" className="block text-sm font-medium text-gray-700">Group Name:</label>
             <input
               type="text"
               id="groupName"
               name="groupName"
-              value={formData.groupName}
-              onChange={(e) => handleChange(e, -1)}
+              value={groupName}
+              onChange={handleGroupNameChange}
               className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
@@ -77,21 +87,20 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
             <textarea
               id="description"
               name="description"
-              value={formData.description}
-              onChange={(e) => handleChange(e, -1)}
+              value={description}
+              onChange={handleDescriptionChange}
               className="mt-1 p-2 block w-full rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
             />
           </div>
-          {/* Wallet IDs */}
           <div className="mb-4">
             <label className="block text-sm font-medium text-gray-700">Wallet IDs:</label>
-            {formData.walletIds.map((walletId, index) => (
+            {walletIds.map((walletId, index) => (
               <div key={index} className="flex space-x-2 items-center mb-2">
                 <input
                   type="text"
                   name="walletId"
                   value={walletId}
-                  onChange={(e) => handleChange(e, index)}
+                  onChange={(e) => handleWalletIdChange(e, index)}
                   className="p-2 flex-grow rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
                 <button
@@ -111,16 +120,15 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
               +
             </button>
           </div>
-          {/* Expenses */}
           <div className="mb-4">
             <h3 className="text-lg font-semibold mb-2">Expenses:</h3>
-            {formData.expenses.map((expense, index) => (
+            {expenses.map((expense, index) => (
               <div key={index} className="mb-4">
                 <input
                   type="text"
                   name="description"
                   value={expense.description}
-                  onChange={(e) => handleExpenseChange(e, index)}
+                  onChange={(e) => handleExpenseChange(e, index, 'description')}
                   placeholder="Expense description"
                   className="p-2 w-full rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
@@ -128,19 +136,18 @@ const CreateGroup = ({ isOpen, onClose, onSubmit }) => {
                   type="number"
                   name="amount"
                   value={expense.amount}
-                  onChange={(e) => handleExpenseChange(e, index)}
+                  onChange={(e) => handleExpenseChange(e, index, 'amount')}
                   placeholder="Amount"
                   className="p-2 w-full mt-2 rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 />
                 <select
                   name="currency"
                   value={expense.currency}
-                  onChange={(e) => handleExpenseChange(e, index)}
+                  onChange={(e) => handleExpenseChange(e, index, 'currency')}
                   className="p-2 w-full mt-2 rounded-md border border-gray-300 shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                 >
                   <option value="ETH">ETH</option>
                   <option value="BTC">BTC</option>
-                  {/* Add other cryptocurrency options here */}
                 </select>
                 <button
                   type="button"
