@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
 import styled from 'styled-components';
+import CreateGroup from '../components/CreateGroup';
 
 const Container = styled.div`
   max-width: 400px;
@@ -41,11 +43,9 @@ const Button = styled.button`
 `;
 
 function Dashboard() {
-  const [groups, setGroups] = useState([
-    { name: 'Group 1' },
-    { name: 'Group 2' },
-    { name: 'Group 3' },
-  ]);
+  const [groups, setGroups] = useState([]);
+
+  const [isCreateGroupVisible, setIsCreateGroupVisible] = useState(false);
 
   const addGroup = () => {
     const groupName = prompt('Enter group name:');
@@ -54,18 +54,36 @@ function Dashboard() {
     }
   };
 
+  const openCreateGroup = () => {
+    setIsCreateGroupVisible(true);
+  };
+
+  const closeCreateGroup = () => {
+    setIsCreateGroupVisible(false);
+  };
+
   return (
     <Container>
       <Title>My Groups</Title>
       <GroupList>
         {groups.map((group, index) => (
           <GroupItem key={index}>
-            {group.name}
-            <Button>Join</Button>
+            {group.groupName}
+            <Button>View</Button>
           </GroupItem>
         ))}
+
+<Button
+            onClick={openCreateGroup}
+            className="text-white font-semibold hover:text-blue-300"
+          >
+            Create
+          </Button>
       </GroupList>
-      <Button onClick={addGroup}>Add Group</Button>
+      {isCreateGroupVisible && ReactDOM.createPortal(
+        <CreateGroup isOpen={isCreateGroupVisible} onClose={closeCreateGroup} onSubmit={(formData) => setGroups([...groups, formData])} />,
+        document.body
+      )}
     </Container>
   );
 }
